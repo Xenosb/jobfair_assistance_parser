@@ -20,15 +20,13 @@ def main(argv):
     o = open(argv[1], 'wb')
   else:
     print('Run command as: praser <input.file> [<output.file>]')
-    return 0;
+    return 0
 
   companies = parse_data(i)
   write(companies, o)
 
   i.close()
   o.close()
-
-#@mpetrunic, Ericsson Nikola Tesla želi vodu na štandu B21!
 
 def parse_data(in_file):
   lines = filter(None, (line.rstrip() for line in in_file))
@@ -37,7 +35,7 @@ def parse_data(in_file):
 
   for line in valid:
     parts = line.split(' želi ')
-    words = (parts[0].split(' ')[0], parts[0].split(', ')[1], parts[1].split(' ')[0])
+    words = (parts[0].split(' ')[0].strip(','), parts[0].split(', ')[1], parts[1].split(' ')[0])
     (student, company_name, service) = words
     if company_name not in companies:
       companies[company_name] = CompanyData()
@@ -46,13 +44,14 @@ def parse_data(in_file):
       companies[company_name].water += 1
     elif service == 'kavu':
       companies[company_name].coffee += 1
-    elif service == 'pomoć':
+    elif service == 'pomoć?!':
       companies[company_name].assistance += 1
   return companies
   
 def write(companies, o):
   print(len(companies))
   wr = csv.writer(o, quoting=csv.QUOTE_ALL)
+  wr.writerow(['company', 'student', 'water', 'coffee', 'assistance'])
   for company in companies:
     wr.writerow([company, companies[company].student, companies[company].water, companies[company].coffee, companies[company].assistance])
 
